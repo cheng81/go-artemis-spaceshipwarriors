@@ -18,7 +18,7 @@ func main() {
 		sf.StyleClose,
 		sf.DefaultContextSettings())
 
-	sw := NewSpaceshipWarrior(w, time.Duration(time.Second/60))
+	sw := NewSpaceshipWarrior(w, time.Duration(time.Second/30))
 	sw.Start()
 	// b := c.Bounds(50.)
 	// d := c.Expires(60.)
