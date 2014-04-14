@@ -18,6 +18,9 @@ const (
 	SpriteType
 	VelocityType
 	ParticleType
+	RenderableType
+	LayeredType
+	ParticlesType
 )
 
 type Layer uint

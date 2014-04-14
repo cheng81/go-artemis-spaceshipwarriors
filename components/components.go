@@ -1,6 +1,8 @@
 package components
 
 import (
+	sf "bitbucket.org/krepa098/gosfml2"
+
 	a "github.com/cheng81/go-artemis"
 )
 
@@ -108,7 +110,7 @@ type ScaleAnimation struct {
 
 func (_ *ScaleAnimation) TypeId() a.ComponentTypeId { return ScaleAnimationType }
 
-func NewSprite(name string) *Sprite {
+func NewSprite(name string, e *a.Entity) *Sprite {
 	return &Sprite{name, 1., 1., 0., Layer_DEFAULT}
 }
 
@@ -130,13 +132,12 @@ type Velocity struct {
 
 func (_ *Velocity) TypeId() a.ComponentTypeId { return VelocityType }
 
-func NewParticle(sx, sy float64, l Layer) *Particle {
-	return &Particle{sx, sy, l}
+func NewParticle(sx, sy float64) *Particle {
+	return &Particle{sx, sy}
 }
 
 type Particle struct {
 	ScaleX, ScaleY float64
-	InLayer        Layer
 }
 
 func (_ *Particle) TypeId() a.ComponentTypeId { return ParticleType }
@@ -150,3 +151,24 @@ type Color struct {
 }
 
 func (_ *Color) TypeId() a.ComponentTypeId { return ColorType }
+
+func NewSfRenderable(d sf.Drawer) *SfRenderable {
+	return &SfRenderable{d}
+}
+
+type SfRenderable struct{ sf.Drawer }
+
+func (_ *SfRenderable) TypeId() a.ComponentTypeId { return RenderableType }
+
+func NewLayered(l Layer) Layered { return Layered(l) }
+
+type Layered Layer
+
+func (l Layered) InLayer() Layer            { return Layer(l) }
+func (_ Layered) TypeId() a.ComponentTypeId { return LayeredType }
+
+func NewParticles
+
+type Particles struct {
+	Vertices sf.VertexArray
+}

@@ -20,32 +20,6 @@ func NewSpriteRendererSystem(win sf.RenderTarget) (out *a.EntitySystem) {
 	return
 }
 
-type entitiesByLayer []*a.Entity
-
-func (e entitiesByLayer) Len() int      { return len(e) }
-func (e entitiesByLayer) Swap(i, j int) { e[i], e[j] = e[j], e[i] }
-func (e entitiesByLayer) Less(i, j int) bool {
-	si := components.GetSprite(e[i])
-	sj := components.GetSprite(e[j])
-	return si.InLayer < sj.InLayer
-}
-func (ents entitiesByLayer) Remove(e *a.Entity) entitiesByLayer {
-	index := -1
-	for i, el := range ents {
-		if el.Id() == e.Id() {
-			index = i
-			break
-		}
-	}
-	if index < 0 {
-		return ents
-	}
-	copy(ents[index:], ents[index+1:])
-	ents[len(ents)-1] = nil
-	ents = ents[:len(ents)-1]
-	return ents
-}
-
 func newSpriteRenderer(win sf.RenderTarget) a.EntitySystemProcessor {
 	out := &spriteRenderer{
 		EntitySystem: nil,
@@ -104,26 +78,14 @@ func (s *spriteRenderer) process(e *a.Entity) {
 	sprite.SetPosition(sf.Vector2f{
 		float32(p.X + u.HALF_FRAME_W),
 		float32(-p.Y + u.HALF_FRAME_H)})
-	sprite.Draw(s.win, sf.DefaultRenderStates())
+
+	// sprite.Draw(s.win, sf.DefaultRenderStates())
 }
 
 func (s *spriteRenderer) spriteOf(name string) (out *sf.Sprite) {
 	out, ok := s.sprites[name]
 	if !ok {
-		fname := fmt.Sprint("resources/textures/", name, ".png")
-		tex, err := sf.NewTextureFromFile(fname, nil)
-		if err != nil {
-			fmt.Println("could not load texture", fname, err)
-			panic(err)
-		}
-		sprite, err := sf.NewSprite(tex)
-		if err != nil {
-			fmt.Println("could not create sprite", err)
-			panic(err)
-		}
-		CenterOrigin(sprite)
-		fmt.Println("spriteRenderer.spriteOf - sprite loaded", fname, sprite)
-		s.sprites[name] = sprite
+		s.sprites[name] = u.LoadSprite(name)
 		out = sprite
 	}
 	return
@@ -131,14 +93,4 @@ func (s *spriteRenderer) spriteOf(name string) (out *sf.Sprite) {
 
 func b(f float64) byte {
 	return byte(math.Max(0., f) * 255)
-}
-
-type Centerer interface {
-	GetLocalBounds() sf.FloatRect
-	SetOrigin(sf.Vector2f)
-}
-
-func CenterOrigin(t Centerer) {
-	var bounds = t.GetLocalBounds()
-	t.SetOrigin(sf.Vector2f{bounds.Width / float32(2.), bounds.Height / float32(2.)})
 }

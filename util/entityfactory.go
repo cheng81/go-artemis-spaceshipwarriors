@@ -118,8 +118,7 @@ func EntityParticle(w *a.World, x, y float64) (e *a.Entity) {
 
 	pScale := Randf(0.3, 0.6)
 	e.AddComponent(components.NewParticle(
-		pScale, pScale,
-		components.Layer_PARTICLES))
+		pScale, pScale))
 
 	return
 }
