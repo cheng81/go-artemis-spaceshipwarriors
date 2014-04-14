@@ -13,7 +13,8 @@ func NewParticleRendererSystem(win sf.RenderTarget) *a.EntitySystem {
 	return a.NewEntitySystem(
 		a.AspectFor(
 			components.PositionType,
-			components.ParticleType),
+			components.ParticleType,
+			components.ColorType),
 		ParticleRendererSystemType,
 		pr)
 }
@@ -60,20 +61,24 @@ func (s *particleRenderer) ProcessEntities(entities au.ImmutableBag) {
 		e := ei.(*a.Entity)
 		pos := components.GetPosition(e)
 		par := components.GetParticle(e)
-		s.addParticle(par, pos, vs)
+		col := components.GetColor(e)
+		s.addParticle(par, pos, col, vs)
 	})
 	rs := sf.DefaultRenderStates()
 	rs.Texture = s.tex
 	vs.Draw(s.win, rs)
 }
 
-func (s *particleRenderer) addParticle(par *components.Particle, pos *components.Position, vs *sf.VertexArray) {
+func (s *particleRenderer) addParticle(par *components.Particle,
+	pos *components.Position,
+	col *components.Color,
+	vs *sf.VertexArray) {
 	texSize := s.texSize
 	hSize := sf.Vector2f{
 		(float32(par.ScaleX) * texSize.X) / 2.,
 		(float32(par.ScaleY) * texSize.Y) / 2.,
 	}
-	color := sf.Color{R: b(par.R), G: b(par.G), B: b(par.B), A: b(par.A)}
+	color := sf.Color{R: b(col.R), G: b(col.G), B: b(col.B), A: b(col.A)}
 	sfPos := sfmlPosition(pos)
 
 	addVertex(vs, sfPos.X-hSize.X, sfPos.Y-hSize.Y, 0, 0, color)

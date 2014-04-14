@@ -10,11 +10,9 @@ import (
 func EntityPlayer(w *a.World, x, y float64) (e *a.Entity) {
 	e = w.CreateEntity()
 	e.AddComponent(components.NewPosition(x, y))
+	e.AddComponent(components.NewColor(93./255., 255./255., 129./255., 1.))
 
 	sprite := components.NewSprite("fighter")
-	sprite.R = 93. / 255.
-	sprite.G = 255. / 255.
-	sprite.B = 129. / 255.
 	sprite.InLayer = components.Layer_ACTORS3
 	e.AddComponent(sprite)
 
@@ -29,6 +27,7 @@ func EntityPlayer(w *a.World, x, y float64) (e *a.Entity) {
 func EntityPlayerBullet(w *a.World, x, y float64) (e *a.Entity) {
 	e = w.CreateEntity()
 	e.AddComponent(components.NewPosition(x, y))
+	e.AddComponent(components.NewColor(1., 1., 1., 1.))
 
 	sprite := components.NewSprite("bullet")
 	sprite.InLayer = components.Layer_PARTICLES
@@ -49,12 +48,10 @@ func EntityEnemyShip(w *a.World, name string, layer components.Layer, health, x,
 	e.AddComponent(components.NewVelocity(velocityX, velocityY))
 	e.AddComponent(components.NewBounds(boundsRadius))
 	e.AddComponent(components.NewHealth(health, health))
+	e.AddComponent(components.NewColor(255./255., 0., 142./255., 1.))
 
 	sprite := components.NewSprite(name)
 	sprite.InLayer = layer
-	sprite.R = 255. / 255.
-	sprite.G = 0. / 255.
-	sprite.B = 142. / 255.
 	e.AddComponent(sprite)
 
 	w.ManagerOfType(am.GroupManagerTypeId).(*am.GroupManager).Add(e, Group_EnemyShips)
@@ -67,14 +64,11 @@ func EntityExplosion(w *a.World, x, y, scale float64) (e *a.Entity) {
 	e.AddComponent(components.NewPosition(x, y))
 	e.AddComponent(components.NewExpires(0.5))
 	e.AddComponent(components.NewScaleAnimation(scale/100., scale, -3., false, true))
+	e.AddComponent(components.NewColor(1., 216./255., 0, 0.5))
 
 	sprite := components.NewSprite("explosion")
 	sprite.ScaleX = scale
 	sprite.ScaleY = scale
-	sprite.R = 1
-	sprite.G = 216. / 255.
-	sprite.B = 0
-	sprite.A = 0.5
 	sprite.InLayer = components.Layer_PARTICLES
 	e.AddComponent(sprite)
 
@@ -96,10 +90,10 @@ func EntityStar(w *a.World) (e *a.Entity) {
 			0.1, 0.5, Randf(0.2, 0.7)},
 		[4]bool{false, false, false, true}, true))
 
+	e.AddComponent(components.NewColor(1., 1., 1., Randf(0.1, 0.5)))
 	sprite := components.NewSprite("particle")
 	sprite.ScaleX = Randf(0., 0.5)
 	sprite.ScaleY = sprite.ScaleX
-	sprite.A = Randf(0.1, 0.5)
 	sprite.InLayer = components.Layer_BACKGROUND
 	e.AddComponent(sprite)
 
@@ -120,20 +114,12 @@ func EntityParticle(w *a.World, x, y float64) (e *a.Entity) {
 			0, 1, -1},
 		[4]bool{false, false, false, true}, false))
 
+	e.AddComponent(components.NewColor(1., 216./255., 0, 0.5))
+
 	pScale := Randf(0.3, 0.6)
 	e.AddComponent(components.NewParticle(
 		pScale, pScale,
-		1., 216./255., 0, 0.5,
 		components.Layer_PARTICLES))
-	// sprite := components.NewSprite("particle")
-	// sprite.ScaleX = Randf(0.3, 0.6)
-	// sprite.ScaleY = sprite.ScaleX
-	// sprite.R = 1
-	// sprite.G = 216. / 255.
-	// sprite.B = 0
-	// sprite.A = 0.5
-	// sprite.InLayer = components.Layer_PARTICLES
-	// e.AddComponent(sprite)
 
 	return
 }

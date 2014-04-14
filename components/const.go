@@ -6,6 +6,7 @@ import (
 
 const (
 	BoundsType = a.ComponentTypeId(iota)
+	ColorType
 	ColorAnimationType
 	EnemyType
 	ExpiresType

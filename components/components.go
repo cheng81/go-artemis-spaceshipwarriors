@@ -19,6 +19,7 @@ func GetScaleAnim(e *a.Entity) *ScaleAnimation {
 func GetSprite(e *a.Entity) *Sprite     { return e.Component(SpriteType).(*Sprite) }
 func GetVelocity(e *a.Entity) *Velocity { return e.Component(VelocityType).(*Velocity) }
 func GetParticle(e *a.Entity) *Particle { return e.Component(ParticleType).(*Particle) }
+func GetColor(e *a.Entity) *Color       { return e.Component(ColorType).(*Color) }
 
 func NewBounds(r float64) Bounds { return Bounds(r) }
 
@@ -108,14 +109,13 @@ type ScaleAnimation struct {
 func (_ *ScaleAnimation) TypeId() a.ComponentTypeId { return ScaleAnimationType }
 
 func NewSprite(name string) *Sprite {
-	return &Sprite{name, 1., 1., 0., 1., 1., 1., 1., Layer_DEFAULT}
+	return &Sprite{name, 1., 1., 0., Layer_DEFAULT}
 }
 
 type Sprite struct {
 	Name           string
 	ScaleX, ScaleY float64
 	Rotation       float64
-	R, G, B, A     float64
 	InLayer        Layer
 }
 
@@ -130,14 +130,23 @@ type Velocity struct {
 
 func (_ *Velocity) TypeId() a.ComponentTypeId { return VelocityType }
 
-func NewParticle(sx, sy, r, g, b, a float64, l Layer) *Particle {
-	return &Particle{sx, sy, r, g, b, a, l}
+func NewParticle(sx, sy float64, l Layer) *Particle {
+	return &Particle{sx, sy, l}
 }
 
 type Particle struct {
 	ScaleX, ScaleY float64
-	R, G, B, A     float64
 	InLayer        Layer
 }
 
 func (_ *Particle) TypeId() a.ComponentTypeId { return ParticleType }
+
+func NewColor(r, g, b, a float64) *Color {
+	return &Color{r, g, b, a}
+}
+
+type Color struct {
+	R, G, B, A float64
+}
+
+func (_ *Color) TypeId() a.ComponentTypeId { return ColorType }

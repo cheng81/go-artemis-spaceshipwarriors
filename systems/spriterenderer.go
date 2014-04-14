@@ -2,12 +2,10 @@ package systems
 
 import (
 	sf "bitbucket.org/krepa098/gosfml2"
-	// "container/list"
+	"fmt"
 	a "github.com/cheng81/go-artemis"
 	components "github.com/cheng81/go-artemis-spaceshipwarriors/components"
 	u "github.com/cheng81/go-artemis-spaceshipwarriors/util"
-	// as "github.com/cheng81/go-artemis/systems"
-	"fmt"
 	au "github.com/cheng81/go-artemis/util"
 	"math"
 	"sort"
@@ -16,7 +14,7 @@ import (
 func NewSpriteRendererSystem(win sf.RenderTarget) (out *a.EntitySystem) {
 	sr := newSpriteRenderer(win)
 	out = a.NewEntitySystem(
-		a.AspectFor(components.PositionType, components.SpriteType),
+		a.AspectFor(components.PositionType, components.SpriteType, components.ColorType),
 		SpriteRendererSystemType,
 		sr)
 	return
@@ -98,9 +96,10 @@ func (s *spriteRenderer) ProcessEntities(entities au.ImmutableBag) {
 func (s *spriteRenderer) process(e *a.Entity) {
 	p := components.GetPosition(e)
 	sp := components.GetSprite(e)
+	col := components.GetColor(e)
 	sprite := s.spriteOf(sp.Name)
 	// fmt.Println("spriteRenderer.process - sprite loaded", e, sprite)
-	sprite.SetColor(sf.Color{R: b(sp.R), G: b(sp.G), B: b(sp.B), A: b(sp.A)})
+	sprite.SetColor(sf.Color{R: b(col.R), G: b(col.G), B: b(col.B), A: b(col.A)})
 	sprite.SetScale(sf.Vector2f{float32(sp.ScaleX), float32(sp.ScaleY)})
 	sprite.SetPosition(sf.Vector2f{
 		float32(p.X + u.HALF_FRAME_W),
