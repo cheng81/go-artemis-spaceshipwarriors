@@ -1,10 +1,9 @@
 package systems
 
 import (
+	a "github.com/cheng81/go-artemis"
 	components "github.com/cheng81/go-artemis-spaceshipwarriors/components"
 	util "github.com/cheng81/go-artemis-spaceshipwarriors/util"
-	a "github.com/cheng81/go-artemis/core"
-	// am "github.com/cheng81/go-artemis/managers"
 	as "github.com/cheng81/go-artemis/systems"
 	au "github.com/cheng81/go-artemis/util"
 )

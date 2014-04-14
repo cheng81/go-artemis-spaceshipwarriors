@@ -2,9 +2,9 @@ package systems
 
 import (
 	sf "bitbucket.org/krepa098/gosfml2"
+	a "github.com/cheng81/go-artemis"
 	c "github.com/cheng81/go-artemis-spaceshipwarriors/components"
 	u "github.com/cheng81/go-artemis-spaceshipwarriors/util"
-	a "github.com/cheng81/go-artemis/core"
 )
 
 const (

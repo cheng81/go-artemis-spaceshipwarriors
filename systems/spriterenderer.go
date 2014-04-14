@@ -3,9 +3,9 @@ package systems
 import (
 	sf "bitbucket.org/krepa098/gosfml2"
 	// "container/list"
+	a "github.com/cheng81/go-artemis"
 	components "github.com/cheng81/go-artemis-spaceshipwarriors/components"
 	u "github.com/cheng81/go-artemis-spaceshipwarriors/util"
-	a "github.com/cheng81/go-artemis/core"
 	// as "github.com/cheng81/go-artemis/systems"
 	"fmt"
 	au "github.com/cheng81/go-artemis/util"

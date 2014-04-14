@@ -1,7 +1,7 @@
 package components
 
 import (
-	a "github.com/cheng81/go-artemis/core"
+	a "github.com/cheng81/go-artemis"
 )
 
 // getter functions

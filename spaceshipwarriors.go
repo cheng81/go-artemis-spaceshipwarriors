@@ -3,9 +3,9 @@ package main
 import (
 	sf "bitbucket.org/krepa098/gosfml2"
 	"fmt"
+	a "github.com/cheng81/go-artemis"
 	s "github.com/cheng81/go-artemis-spaceshipwarriors/systems"
 	u "github.com/cheng81/go-artemis-spaceshipwarriors/util"
-	a "github.com/cheng81/go-artemis/core"
 	am "github.com/cheng81/go-artemis/managers"
 	"time"
 )

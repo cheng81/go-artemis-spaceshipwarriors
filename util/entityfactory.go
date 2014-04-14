@@ -1,8 +1,8 @@
 package util
 
 import (
+	a "github.com/cheng81/go-artemis"
 	components "github.com/cheng81/go-artemis-spaceshipwarriors/components"
-	a "github.com/cheng81/go-artemis/core"
 	am "github.com/cheng81/go-artemis/managers"
 	// au "github.com/cheng81/go-artemis/util"
 )
