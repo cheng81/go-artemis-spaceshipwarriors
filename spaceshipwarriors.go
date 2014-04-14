@@ -72,6 +72,13 @@ func (sw *spaceshipWarriors) Start() {
 	for sw.win.IsOpen() {
 		select {
 		case <-ticker.C:
+			// consume window events
+			for ev := sw.win.PollEvent(); ev != nil; ev = sw.win.PollEvent() {
+				if ev.Type() == sf.EventTypeClosed {
+					sw.win.Close()
+				}
+			}
+
 			sw.win.Clear(sf.ColorBlack())
 			deltaTime = time.Since(now)
 			now = time.Now()
