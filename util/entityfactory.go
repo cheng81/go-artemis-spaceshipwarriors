@@ -85,7 +85,7 @@ func EntityStar(w *a.World) (e *a.Entity) {
 	e = w.CreateEntity()
 
 	e.AddComponent(components.NewPosition(Randf(-HALF_FRAME_W, HALF_FRAME_W), Randf(-HALF_FRAME_H, HALF_FRAME_H)))
-	e.AddComponent(components.NewVelocity(0, Randf(10., 60.)))
+	e.AddComponent(components.NewVelocity(0, -Randf(10., 60.)))
 	e.AddComponent(components.NewParallaxStar())
 
 	e.AddComponent(components.NewColorAnimation(
