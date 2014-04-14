@@ -2,7 +2,7 @@ package components
 
 import (
 	sf "bitbucket.org/krepa098/gosfml2"
-
+	"fmt"
 	a "github.com/cheng81/go-artemis"
 )
 
@@ -167,8 +167,21 @@ type Layered Layer
 func (l Layered) InLayer() Layer            { return Layer(l) }
 func (_ Layered) TypeId() a.ComponentTypeId { return LayeredType }
 
-func NewParticles
+func NewParticles() *Particles {
+	return &Particles{Vertices: newVertexArray()}
+}
 
 type Particles struct {
-	Vertices sf.VertexArray
+	Vertices *sf.VertexArray
+}
+
+func (_ *Particles) TypeId() a.ComponentTypeId { return ParticlesType }
+
+func newVertexArray() *sf.VertexArray {
+	out, err := sf.NewVertexArray()
+	if err != nil {
+		fmt.Println("Cannot create vertex array", err)
+		panic("Cannot create vertex array")
+	}
+	return out
 }
