@@ -101,11 +101,14 @@ func EntityStar(w *a.World) (e *a.Entity) {
 
 	e.AddComponent(components.NewColor(1., 1., 1., Randf(0.1, 0.5)))
 
-	setSfmlSprite("particle", components.Layer_BACKGROUND, e)
-	sprite := components.GetSprite(e)
-	sprite.ScaleX = Randf(0., 0.5)
-	sprite.ScaleY = sprite.ScaleX
-	e.AddComponent(sprite)
+	scale := Randf(0., 0.5)
+	e.AddComponent(components.NewParticle(scale, scale)).AddComponent(components.NewLayered(components.Layer_BACKGROUND))
+
+	// setSfmlSprite("particle", components.Layer_BACKGROUND, e)
+	// sprite := components.GetSprite(e)
+	// sprite.ScaleX = Randf(0., 0.5)
+	// sprite.ScaleY = sprite.ScaleX
+	// e.AddComponent(sprite)
 
 	return
 }
