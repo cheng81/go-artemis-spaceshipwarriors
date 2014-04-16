@@ -17,8 +17,9 @@ const (
 	OffScreenRemoverSystemType
 	ScaleAnimationSystemType
 	PlayerInputSystemType
-	SpriteRendererSystemType
-	ParticleRendererSystemType
+	ParticleProcessorSystemType
+	SpriteProcessorSystemType
+	SfmlRendererSystemType
 )
 
 type FuncProcessor func(*a.Entity)

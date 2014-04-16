@@ -7,14 +7,22 @@ import (
 	// au "github.com/cheng81/go-artemis/util"
 )
 
+func setSfmlSprite(name string, layer components.Layer, e *a.Entity) {
+	e.AddComponent(components.NewLayered(layer)).
+		AddComponent(components.NewSprite(name)).
+		AddComponent(components.NewSfRenderable(LoadSprite(name)))
+}
+
 func EntityPlayer(w *a.World, x, y float64) (e *a.Entity) {
 	e = w.CreateEntity()
 	e.AddComponent(components.NewPosition(x, y))
 	e.AddComponent(components.NewColor(93./255., 255./255., 129./255., 1.))
 
-	sprite := components.NewSprite("fighter")
-	sprite.InLayer = components.Layer_ACTORS3
-	e.AddComponent(sprite)
+	setSfmlSprite("fighter", components.Layer_ACTORS3, e)
+
+	// sprite := components.NewSprite("fighter")
+	// sprite.InLayer = components.Layer_ACTORS3
+	// e.AddComponent(sprite)
 
 	e.AddComponent(components.NewVelocityZero())
 	e.AddComponent(components.NewBounds(43))
@@ -29,9 +37,10 @@ func EntityPlayerBullet(w *a.World, x, y float64) (e *a.Entity) {
 	e.AddComponent(components.NewPosition(x, y))
 	e.AddComponent(components.NewColor(1., 1., 1., 1.))
 
-	sprite := components.NewSprite("bullet")
-	sprite.InLayer = components.Layer_PARTICLES
-	e.AddComponent(sprite)
+	// sprite := components.NewSprite("bullet")
+	// sprite.InLayer = components.Layer_PARTICLES
+	// e.AddComponent(sprite)
+	setSfmlSprite("bullet", components.Layer_PARTICLES, e)
 
 	e.AddComponent(components.NewVelocity(0, 800))
 	e.AddComponent(components.NewBounds(5))
@@ -50,9 +59,10 @@ func EntityEnemyShip(w *a.World, name string, layer components.Layer, health, x,
 	e.AddComponent(components.NewHealth(health, health))
 	e.AddComponent(components.NewColor(255./255., 0., 142./255., 1.))
 
-	sprite := components.NewSprite(name)
-	sprite.InLayer = layer
-	e.AddComponent(sprite)
+	setSfmlSprite(name, layer, e)
+	// sprite := components.NewSprite(name)
+	// sprite.InLayer = layer
+	// e.AddComponent(sprite)
 
 	w.ManagerOfType(am.GroupManagerTypeId).(*am.GroupManager).Add(e, Group_EnemyShips)
 	return
@@ -66,11 +76,10 @@ func EntityExplosion(w *a.World, x, y, scale float64) (e *a.Entity) {
 	e.AddComponent(components.NewScaleAnimation(scale/100., scale, -3., false, true))
 	e.AddComponent(components.NewColor(1., 216./255., 0, 0.5))
 
-	sprite := components.NewSprite("explosion")
+	setSfmlSprite("explosion", components.Layer_PARTICLES, e)
+	sprite := components.GetSprite(e)
 	sprite.ScaleX = scale
 	sprite.ScaleY = scale
-	sprite.InLayer = components.Layer_PARTICLES
-	e.AddComponent(sprite)
 
 	return
 }
@@ -91,10 +100,11 @@ func EntityStar(w *a.World) (e *a.Entity) {
 		[4]bool{false, false, false, true}, true))
 
 	e.AddComponent(components.NewColor(1., 1., 1., Randf(0.1, 0.5)))
-	sprite := components.NewSprite("particle")
+
+	setSfmlSprite("particle", components.Layer_BACKGROUND, e)
+	sprite := components.GetSprite(e)
 	sprite.ScaleX = Randf(0., 0.5)
 	sprite.ScaleY = sprite.ScaleX
-	sprite.InLayer = components.Layer_BACKGROUND
 	e.AddComponent(sprite)
 
 	return
@@ -119,6 +129,18 @@ func EntityParticle(w *a.World, x, y float64) (e *a.Entity) {
 	pScale := Randf(0.3, 0.6)
 	e.AddComponent(components.NewParticle(
 		pScale, pScale))
+
+	e.AddComponent(components.NewLayered(components.Layer_PARTICLES))
+	return
+}
+
+func EntityParticleEmitter(w *a.World, layer components.Layer) (e *a.Entity) {
+	e = w.CreateEntity()
+	va := NewVertexArray()
+
+	e.AddComponent(components.NewLayered(layer)).
+		AddComponent(components.NewParticles()).
+		AddComponent(components.NewSfRenderable(va))
 
 	return
 }

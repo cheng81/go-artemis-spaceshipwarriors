@@ -18,9 +18,9 @@ const (
 	SpriteType
 	VelocityType
 	ParticleType
-	RenderableType
 	LayeredType
 	ParticlesType
+	SfRenderableType
 )
 
 type Layer uint
@@ -32,4 +32,5 @@ const (
 	Layer_ACTORS2
 	Layer_ACTORS3
 	Layer_PARTICLES
+	Layer_count
 )

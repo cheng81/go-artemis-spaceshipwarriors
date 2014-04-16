@@ -18,10 +18,14 @@ func GetPosition(e *a.Entity) *Position { return e.Component(PositionType).(*Pos
 func GetScaleAnim(e *a.Entity) *ScaleAnimation {
 	return e.Component(ScaleAnimationType).(*ScaleAnimation)
 }
-func GetSprite(e *a.Entity) *Sprite     { return e.Component(SpriteType).(*Sprite) }
-func GetVelocity(e *a.Entity) *Velocity { return e.Component(VelocityType).(*Velocity) }
-func GetParticle(e *a.Entity) *Particle { return e.Component(ParticleType).(*Particle) }
-func GetColor(e *a.Entity) *Color       { return e.Component(ColorType).(*Color) }
+func GetSprite(e *a.Entity) *Sprite      { return e.Component(SpriteType).(*Sprite) }
+func GetVelocity(e *a.Entity) *Velocity  { return e.Component(VelocityType).(*Velocity) }
+func GetParticle(e *a.Entity) *Particle  { return e.Component(ParticleType).(*Particle) }
+func GetColor(e *a.Entity) *Color        { return e.Component(ColorType).(*Color) }
+func GetLayered(e *a.Entity) Layered     { return e.Component(LayeredType).(Layered) }
+func GetParticles(e *a.Entity) Particles { return e.Component(ParticlesType).(Particles) }
+
+func GetSfRenderable(e *a.Entity) *SfRenderable { return e.Component(SfRenderableType).(*SfRenderable) }
 
 func NewBounds(r float64) Bounds { return Bounds(r) }
 
@@ -110,15 +114,15 @@ type ScaleAnimation struct {
 
 func (_ *ScaleAnimation) TypeId() a.ComponentTypeId { return ScaleAnimationType }
 
-func NewSprite(name string, e *a.Entity) *Sprite {
-	return &Sprite{name, 1., 1., 0., Layer_DEFAULT}
+func NewSprite(name string) *Sprite {
+	return &Sprite{name, 1., 1., 0.} //, Layer_DEFAULT}
 }
 
 type Sprite struct {
 	Name           string
 	ScaleX, ScaleY float64
 	Rotation       float64
-	InLayer        Layer
+	// InLayer        Layer
 }
 
 func (_ *Sprite) TypeId() a.ComponentTypeId { return SpriteType }
@@ -153,12 +157,15 @@ type Color struct {
 func (_ *Color) TypeId() a.ComponentTypeId { return ColorType }
 
 func NewSfRenderable(d sf.Drawer) *SfRenderable {
-	return &SfRenderable{d}
+	return &SfRenderable{Drawer: d, States: sf.DefaultRenderStates()}
 }
 
-type SfRenderable struct{ sf.Drawer }
+type SfRenderable struct {
+	sf.Drawer
+	States sf.RenderStates
+}
 
-func (_ *SfRenderable) TypeId() a.ComponentTypeId { return RenderableType }
+func (_ *SfRenderable) TypeId() a.ComponentTypeId { return SfRenderableType }
 
 func NewLayered(l Layer) Layered { return Layered(l) }
 
@@ -167,15 +174,21 @@ type Layered Layer
 func (l Layered) InLayer() Layer            { return Layer(l) }
 func (_ Layered) TypeId() a.ComponentTypeId { return LayeredType }
 
-func NewParticles() *Particles {
-	return &Particles{Vertices: newVertexArray()}
-}
+// func NewParticles() *Particles {
+// 	return &Particles{Vertices: newVertexArray()}
+// }
 
-type Particles struct {
-	Vertices *sf.VertexArray
-}
+func NewParticles() Particles { return Particles(struct{}{}) }
 
-func (_ *Particles) TypeId() a.ComponentTypeId { return ParticlesType }
+type Particles struct{}
+
+func (_ Particles) TypeId() a.ComponentTypeId { return ParticlesType }
+
+// type Particles struct {
+// 	Vertices *sf.VertexArray
+// }
+
+// func (_ *Particles) TypeId() a.ComponentTypeId { return ParticlesType }
 
 func newVertexArray() *sf.VertexArray {
 	out, err := sf.NewVertexArray()

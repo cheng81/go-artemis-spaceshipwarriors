@@ -4,6 +4,7 @@ import (
 	sf "bitbucket.org/krepa098/gosfml2"
 	"fmt"
 	a "github.com/cheng81/go-artemis"
+	c "github.com/cheng81/go-artemis-spaceshipwarriors/components"
 	s "github.com/cheng81/go-artemis-spaceshipwarriors/systems"
 	u "github.com/cheng81/go-artemis-spaceshipwarriors/util"
 	am "github.com/cheng81/go-artemis/managers"
@@ -15,8 +16,7 @@ func NewSpaceshipWarrior(win *sf.RenderWindow, tpf time.Duration) (out *spaceshi
 		win:          win,
 		timePerFrame: tpf,
 		world:        a.NewWorld(),
-		spr:          nil,
-		playerId:     0,
+		render:       nil,
 	}
 	out.Init()
 	return
@@ -28,10 +28,7 @@ type spaceshipWarriors struct {
 
 	world *a.World
 
-	spr *a.EntitySystem
-	par *a.EntitySystem
-
-	playerId uint
+	render *a.EntitySystem
 }
 
 func (sw *spaceshipWarriors) Init() {
@@ -48,19 +45,24 @@ func (sw *spaceshipWarriors) Init() {
 	w.AddActiveSystem(s.NewColorAnimationSystem())
 	w.AddActiveSystem(s.NewScaleAnimationSystem())
 	w.AddActiveSystem(s.NewOffScreenRemover())
+	w.AddActiveSystem(s.NewSpriteProcessorSystem())
+	w.AddActiveSystem(s.NewParticleProcessorSystem())
 
-	sw.spr = w.AddSystem(s.NewSpriteRendererSystem(win), true)
-	sw.par = w.AddSystem(s.NewParticleRendererSystem(win), true)
+	// sw.spr = w.AddSystem(s.NewSpriteRendererSystem(win), true)
+	// sw.par = w.AddSystem(s.NewParticleRendererSystem(win), true)
+	sw.render = w.AddSystem(s.NewSfmlRendererSystem(win), true)
 
 	w.Initialize()
 
-	player := u.EntityPlayer(w, 0, 0)
-	player.AddToWorld()
-
-	sw.playerId = player.Id()
+	u.EntityPlayer(w, 0, 0).AddToWorld()
 
 	for i := 0; i < 500; i++ {
 		u.EntityStar(w).AddToWorld()
+	}
+
+	for i := 0; i < int(c.Layer_count); i++ {
+		l := c.Layer(i)
+		u.EntityParticleEmitter(w, l).AddToWorld()
 	}
 }
 
@@ -86,8 +88,8 @@ func (sw *spaceshipWarriors) Start() {
 			sw.world.SetDelta(deltaTime.Seconds())
 			sw.world.Process()
 
-			sw.spr.Process()
-			sw.par.Process()
+			sw.render.Process()
+			// sw.par.Process()
 			sw.win.Display()
 
 			if time.Since(lastPrint) > time.Second {

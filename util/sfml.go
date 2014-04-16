@@ -20,13 +20,15 @@ var textures = make(map[string]*sf.Texture)
 func LoadSprite(name string) *sf.Sprite {
 	tex, ok := textures[name]
 	if !ok {
+		var err error = nil
 		fname := fmt.Sprint("resources/textures/", name, ".png")
-		tex, err := sf.NewTextureFromFile(fname, nil)
+		tex, err = sf.NewTextureFromFile(fname, nil)
 		if err != nil {
 			fmt.Println("could not load texture", fname, err)
 			panic(err)
 		}
-		fmt.Println("spriteRenderer.spriteOf - sprite loaded", fname, sprite)
+		textures[name] = tex
+		fmt.Println("spriteRenderer.spriteOf - sprite loaded", fname)
 	}
 
 	out, err := sf.NewSprite(tex)
@@ -34,6 +36,15 @@ func LoadSprite(name string) *sf.Sprite {
 		fmt.Println("could not create sprite", err)
 		panic(err)
 	}
-	CenterOrigin(sprite)
+	CenterOrigin(out)
+	return out
+}
+
+func NewVertexArray() *sf.VertexArray {
+	out, err := sf.NewVertexArray()
+	if err != nil {
+		fmt.Println("Cannot create vertex array", err)
+		panic("Cannot create vertex array")
+	}
 	return out
 }
