@@ -46,5 +46,6 @@ func NewVertexArray() *sf.VertexArray {
 		fmt.Println("Cannot create vertex array", err)
 		panic("Cannot create vertex array")
 	}
+	out.PrimitiveType = sf.PrimitiveQuads
 	return out
 }
