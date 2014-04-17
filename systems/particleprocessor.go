@@ -77,6 +77,9 @@ func (p *particleProcessor) ProcessEntities(_ au.ImmutableBag) {
 			renderable := components.GetSfRenderable(emitter)
 			renderable.States.Texture = p.tex
 			vs := renderable.Drawer.(*sf.VertexArray)
+			for _, v := range vs.Vertices {
+				vPool.checkIn(v)
+			}
 			vs.Clear()
 			p.process(vs, ents)
 		}
@@ -112,7 +115,12 @@ func (p *particleProcessor) addParticle(par *components.Particle,
 }
 
 func addVertex(vs *sf.VertexArray, worldx, worldy, texx, texy float32, color sf.Color) {
-	vertex := sf.Vertex{sf.Vector2f{worldx, worldy}, color, sf.Vector2f{texx, texy}}
+	vertex := vPool.checkOut() //sf.Vertex{sf.Vector2f{worldx, worldy}, color, sf.Vector2f{texx, texy}}
+	vertex.Position.X = worldx
+	vertex.Position.Y = worldy
+	vertex.Color = color
+	vertex.TexCoords.X = texx
+	vertex.TexCoords.Y = texy
 	vs.Append(vertex)
 }
 
@@ -124,4 +132,26 @@ func textureOf(name string) *sf.Texture {
 		panic(err)
 	}
 	return tex
+}
+
+var vPool = newVertexPool()
+
+func newVertexPool() *vertexPool {
+	return &vertexPool{
+		vs: au.NewBag(256),
+	}
+}
+
+type vertexPool struct {
+	vs *au.Bag
+}
+
+func (v *vertexPool) checkOut() (out sf.Vertex) {
+	if v.vs.Size() > 0 {
+		return v.vs.RemoveLast().(sf.Vertex)
+	}
+	return sf.Vertex{sf.Vector2f{}, sf.Color{}, sf.Vector2f{}}
+}
+func (vp *vertexPool) checkIn(v sf.Vertex) {
+	vp.vs.Add(v)
 }
