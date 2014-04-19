@@ -70,23 +70,37 @@ func (p *particleProcessor) Removed(e *a.Entity) {
 	}
 }
 
-func (p *particleProcessor) ProcessEntities(_ au.ImmutableBag) {
+func (p *particleProcessor) ProcessEntities(_ents au.ImmutableBag) {
+	done := make(chan struct{}, len(p.particlesByLayer))
+	wait := 0
 	for layer, ents := range p.particlesByLayer {
 		emitter, ok := p.particlesEmitter[layer]
-		if ok {
-			renderable := components.GetSfRenderable(emitter)
-			renderable.States.Texture = p.tex
-			vs := renderable.Drawer.(*sf.VertexArray)
-			for _, v := range vs.Vertices {
-				vPool.checkIn(v)
-			}
-			vs.Clear()
-			p.process(vs, ents)
+		if ok && ents.Size() > 0 {
+			wait++
+			go processLayer(done, p, emitter, ents)
 		}
 	}
+	if wait > 0 {
+		for _ = range done {
+			wait--
+			if wait == 0 {
+				break
+			}
+		}
+	}
+	close(done)
 }
 
-func (p *particleProcessor) process(vs *sf.VertexArray, parts *au.Bag) {
+func processLayer(done chan<- struct{}, pp *particleProcessor, emitter *a.Entity, particles au.ImmutableBag) {
+	renderable := components.GetSfRenderable(emitter)
+	renderable.States.Texture = pp.tex
+	vs := renderable.Drawer.(*sf.VertexArray)
+	vs.Clear()
+	pp.process(vs, particles)
+	done <- struct{}{}
+}
+
+func (p *particleProcessor) process(vs *sf.VertexArray, parts au.ImmutableBag) {
 	parts.ForEach(func(_ int, ei interface{}) {
 		e := ei.(*a.Entity)
 		pos := components.GetPosition(e)
@@ -115,12 +129,7 @@ func (p *particleProcessor) addParticle(par *components.Particle,
 }
 
 func addVertex(vs *sf.VertexArray, worldx, worldy, texx, texy float32, color sf.Color) {
-	vertex := vPool.checkOut() //sf.Vertex{sf.Vector2f{worldx, worldy}, color, sf.Vector2f{texx, texy}}
-	vertex.Position.X = worldx
-	vertex.Position.Y = worldy
-	vertex.Color = color
-	vertex.TexCoords.X = texx
-	vertex.TexCoords.Y = texy
+	vertex := sf.Vertex{sf.Vector2f{worldx, worldy}, color, sf.Vector2f{texx, texy}}
 	vs.Append(vertex)
 }
 
@@ -132,26 +141,4 @@ func textureOf(name string) *sf.Texture {
 		panic(err)
 	}
 	return tex
-}
-
-var vPool = newVertexPool()
-
-func newVertexPool() *vertexPool {
-	return &vertexPool{
-		vs: au.NewBag(256),
-	}
-}
-
-type vertexPool struct {
-	vs *au.Bag
-}
-
-func (v *vertexPool) checkOut() (out sf.Vertex) {
-	if v.vs.Size() > 0 {
-		return v.vs.RemoveLast().(sf.Vertex)
-	}
-	return sf.Vertex{sf.Vector2f{}, sf.Color{}, sf.Vector2f{}}
-}
-func (vp *vertexPool) checkIn(v sf.Vertex) {
-	vp.vs.Add(v)
 }
