@@ -12,6 +12,7 @@ import (
 )
 
 func NewSpaceshipWarrior(win *sf.RenderWindow, tpf time.Duration) (out *spaceshipWarriors) {
+	preloadTextures()
 	out = &spaceshipWarriors{
 		win:          win,
 		timePerFrame: tpf,
@@ -64,6 +65,17 @@ func (sw *spaceshipWarriors) Init() {
 		l := c.Layer(i)
 		u.EntityParticleEmitter(w, l).AddToWorld()
 	}
+}
+
+func preloadTextures() {
+	u.LoadTexture(u.TEX_PARTICLE)
+	u.LoadTexture(u.TEX_BULLET)
+	u.LoadTexture(u.TEX_ENEMY1)
+	u.LoadTexture(u.TEX_ENEMY2)
+	u.LoadTexture(u.TEX_ENEMY3)
+	u.LoadTexture(u.TEX_EXPLOSION)
+	u.LoadTexture(u.TEX_FIGHTER)
+	u.LoadTexture(u.TEX_STAR)
 }
 
 func (sw *spaceshipWarriors) Start() {

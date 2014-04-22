@@ -16,3 +16,14 @@ const (
 	HALF_FRAME_W = float64(FRAME_WIDTH / 2)
 	HALF_FRAME_H = float64(FRAME_HEIGHT / 2)
 )
+
+const (
+	TEX_PARTICLE  = "particle"
+	TEX_BULLET    = "bullet"
+	TEX_ENEMY1    = "enemy1"
+	TEX_ENEMY2    = "enemy2"
+	TEX_ENEMY3    = "enemy3"
+	TEX_EXPLOSION = "explosion"
+	TEX_FIGHTER   = "fighter"
+	TEX_STAR      = "star"
+)

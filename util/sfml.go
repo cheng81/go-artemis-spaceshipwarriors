@@ -17,6 +17,26 @@ func CenterOrigin(t Centerer) {
 
 var textures = make(map[string]*sf.Texture)
 
+func LoadTexture(name string) *sf.Texture {
+	tex, ok := textures[name]
+	if !ok {
+		tex = textureOf(name)
+		textures[name] = tex
+	}
+
+	return tex
+}
+
+func textureOf(name string) *sf.Texture {
+	fname := fmt.Sprint("resources/textures/", name, ".png")
+	tex, err := sf.NewTextureFromFile(fname, nil)
+	if err != nil {
+		fmt.Println("could not load texture", fname, err)
+		panic(err)
+	}
+	return tex
+}
+
 func LoadSprite(name string) *sf.Sprite {
 	tex, ok := textures[name]
 	if !ok {

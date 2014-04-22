@@ -2,9 +2,9 @@ package systems
 
 import (
 	sf "bitbucket.org/krepa098/gosfml2"
-	"fmt"
 	a "github.com/cheng81/go-artemis"
 	components "github.com/cheng81/go-artemis-spaceshipwarriors/components"
+	util "github.com/cheng81/go-artemis-spaceshipwarriors/util"
 	au "github.com/cheng81/go-artemis/util"
 )
 
@@ -16,7 +16,7 @@ func NewParticleProcessorSystem() *a.EntitySystem {
 }
 
 func newParticleProcessor() *particleProcessor {
-	tex := textureOf("particle")
+	tex := util.LoadTexture("particle")
 	texSize := sf.Vector2f{
 		float32(tex.GetSize().X),
 		float32(tex.GetSize().Y),
@@ -122,16 +122,6 @@ func addVertex(vs *sf.VertexArray, worldx, worldy, texx, texy float32, color sf.
 	vertex.TexCoords.X = texx
 	vertex.TexCoords.Y = texy
 	vs.Append(vertex)
-}
-
-func textureOf(name string) *sf.Texture {
-	fname := fmt.Sprint("resources/textures/", name, ".png")
-	tex, err := sf.NewTextureFromFile(fname, nil)
-	if err != nil {
-		fmt.Println("could not load texture", fname, err)
-		panic(err)
-	}
-	return tex
 }
 
 var vPool = newVertexPool()
